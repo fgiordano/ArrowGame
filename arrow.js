@@ -54,13 +54,13 @@ Game.prototype.moveArrowRight = function(arrowNumber){
 };
 
 Game.prototype.moveArrowLeft = function(arrowNumber2){
+  console.log(game.a2Array);
   // clearInterval(id2);
-
-  var self = this;
+  var self2 = this;
     id2 = setInterval(function(){
-    self.a2Array[arrowNumber2].x -= 10;
-    if(self.a2Array[arrowNumber2].x < -100){
-      self.a2Array.splice(arrowNumber2,1);
+    self2.a2Array[arrowNumber2].x -= 10;
+    if(self2.a2Array[arrowNumber2].x < -100){
+      // self2.a2Array.splice(arrowNumber2,1);
       clearInterval(id2);
     }
   }, 20)
@@ -92,8 +92,9 @@ Game.prototype.detectCollision = function(){
       this.a1Array[i].draw(this.context, this.a1Array[i].img)
     };
 
-    for (var x = 0; i < this.a2Array.lenth; i++){
-      this.a2Array[i].draw(this.context, this.a2Array[i].img)
+    for (var x = 0; x < this.a2Array.length; x++){
+      this.a2Array[x].draw(this.context, this.a2Array[x].img)
+      console.log(this.a2Array);
     };
 
 
@@ -308,8 +309,8 @@ $(document).on("keydown",function(e){
     myArrow2.img.src = "images/arro_weapon_left.png";
     myArrow2.y = game.p2.y + game.p2.height/3;
     game.a2Array.push(myArrow2);
-    var index = game.a2Array.indexOf(myArrow2);
-    game.moveArrowLeft(index);
+    var index2 = game.a2Array.indexOf(myArrow2);
+    game.moveArrowLeft(index2);
   }
 });
 
