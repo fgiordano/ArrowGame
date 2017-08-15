@@ -43,6 +43,7 @@ Game.prototype.moveArrowRight = function(arrowNumber){
   // clearInterval(id1);
   var self = this;
     id1 = setInterval(function(){
+    game.detectCollision();
     self.a1Array[arrowNumber].x += 10;
     if(self.a1Array[arrowNumber].x > myCanvas.width){
       self.a1Array.splice(arrowNumber,1);
@@ -65,6 +66,17 @@ Game.prototype.moveArrowLeft = function(arrowNumber2){
   }, 20)
 
 };
+
+Game.prototype.detectCollision = function(){
+  if (this.a1Array[0].x < this.p2.x + this.p2.width &&
+     this.a1Array[0].x + this.a1Array[0].width > this.p2.x &&
+     this.a1Array[0].y < this.p2.y + this.p2.height &&
+     this.a1Array[0].height + this.a1Array[0].y > this.p2.y) {
+
+     console.log("collision detected!");
+  }
+};
+
 
 
   Game.prototype.draw = function(){
@@ -279,6 +291,7 @@ $(document).on("keydown",function(e){
     game.a1Array.push(myArrow);
     var index = game.a1Array.indexOf(myArrow);
     game.moveArrowRight(index);
+    console.log(index);
 
     // for (var i = 0; i < game.a1Array.length; i++){
     //   game.a1Array[i].draw(game.context, game.a1Array[i].img)
