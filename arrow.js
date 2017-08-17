@@ -5,6 +5,9 @@ $(document).ready(function(){
   var id2;
   var collisionP1 = false;
   var collisionP2 = false;
+  var p1dead = false;
+  var p2dead = false;
+
 
 function Game(){
   this.width = myCanvas.width;
@@ -352,8 +355,29 @@ document.addEventListener("keypress", function(e){
 function MainLoop() {
     game.update();
     game.draw();
+
+    if (game.p1.lives < 1) {
+      setTimeout(function(){
+      p1dead = true;
+        },1000)
+    }
+
+    if (game.p2.lives < 1) {
+      setTimeout(function(){
+      p2dead = true;
+        },1000)
+    }
+    
+    if (!p1dead && !p2dead){
+      setTimeout(MainLoop, 33.3333);
+    } else if(p1dead){
+        alert("player 2 wins");
+      location.reload();
+    } else if(p2dead){
+        alert("player 1 wins");
+      location.reload();
+    }
     // Call the main loop again at a frame rate of 30fps
-    setTimeout(MainLoop, 33.3333);
 }
 
 
