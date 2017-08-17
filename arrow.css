@@ -1,4 +1,7 @@
 #arrow_canvas {
+    background:url(images/arrowBackground1.png);
+    background-size: contain;
+    background-repeat: no-repeat;
     background-color: #353535;
     padding-left: 0;
     padding-right: 0;

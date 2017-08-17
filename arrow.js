@@ -3,6 +3,8 @@ $(document).ready(function(){
   var game = new Game();
   var id1;
   var id2;
+  var collisionP1 = false;
+  var collisionP2 = false;
 
 function Game(){
   this.width = myCanvas.width;
@@ -21,10 +23,34 @@ function Game(){
   this.image2.src = "images/player2_1.png";
 
   this.a1Array = [];
+  this.a1FiredArray = [];
 
   this.a2Array = [];
+  this.a2FiredArray = [];
 
+  this.h1Array = [];
 
+this.p1h1 = new Heart;
+this.p1h1.x = 185;
+this.h1Array.push(this.p1h1);
+this.p1h2 = new Heart;
+this.p1h2.x = 216;
+this.h1Array.push(this.p1h2);
+this.p1h3 = new Heart;
+this.p1h3.x = 247;
+this.h1Array.push(this.p1h3);
+
+  this.h2Array = [];
+
+  this.p2h1 = new Heart;
+  this.p2h1.x = 952;
+  this.h2Array.push(this.p2h1);
+  this.p2h2 = new Heart;
+  this.p2h2.x = 983;
+  this.h2Array.push(this.p2h2);
+  this.p2h3 = new Heart;
+  this.p2h3.x = 1014;
+  this.h2Array.push(this.p2h3);
   // this.a1 = new Arrow();
   //
   // this.a1.x = this.p1.x;
@@ -36,6 +62,7 @@ function Game(){
   // this.a2.img = new Image();
   // this.a2.img.src = "images/arro_weapon_left.png";
   // this.a2Array.push(this.a2);
+
 };
 
 Game.prototype.moveArrowRight = function(arrowNumber){
@@ -43,40 +70,73 @@ Game.prototype.moveArrowRight = function(arrowNumber){
   // clearInterval(id1);
   var self = this;
     id1 = setInterval(function(){
-    game.detectCollision();
+      if (!collisionP2){
+    game.detectCollisionP2(arrowNumber);
+  }
     self.a1Array[arrowNumber].x += 10;
     if(self.a1Array[arrowNumber].x > myCanvas.width){
-      self.a1Array.splice(arrowNumber,1);
-      clearInterval(id1);
+      // self.a1Array.splice(arrowNumber,1);
+      // clearInterval(id1);
     }
   }, 20)
 
 };
 
-Game.prototype.moveArrowLeft = function(arrowNumber2){
+Game.prototype.moveArrowLeft = function(arrowNumber){
   console.log(game.a2Array);
   // clearInterval(id2);
   var self2 = this;
     id2 = setInterval(function(){
-    self2.a2Array[arrowNumber2].x -= 10;
-    if(self2.a2Array[arrowNumber2].x < -100){
+      if (!collisionP1){
+        game.detectCollisionP1(arrowNumber);
+      }
+    self2.a2Array[arrowNumber].x -= 10;
+    if(self2.a2Array[arrowNumber].x < -100){
       // self2.a2Array.splice(arrowNumber2,1);
-      clearInterval(id2);
+      // clearInterval(id2);
     }
   }, 20)
 
 };
 
-Game.prototype.detectCollision = function(){
-  if (this.a1Array[0].x < this.p2.x + this.p2.width &&
-     this.a1Array[0].x + this.a1Array[0].width > this.p2.x &&
-     this.a1Array[0].y < this.p2.y + this.p2.height &&
-     this.a1Array[0].height + this.a1Array[0].y > this.p2.y) {
-
-     console.log("collision detected!");
+Game.prototype.detectCollisionP2 = function(arrowNumber){
+  if (this.a1Array[arrowNumber].x < this.p2.x + this.p2.width &&
+     this.a1Array[arrowNumber].x + this.a1Array[arrowNumber].width > this.p2.x &&
+     this.a1Array[arrowNumber].y < this.p2.y + this.p2.height &&
+     this.a1Array[arrowNumber].height + this.a1Array[arrowNumber].y > this.p2.y) {
+       collisionP2 = true
+     }
+     if(collisionP2){
+     console.log("collision detected for player 2!");
+     this.p2.lives -= 1;
+     this.h2Array.shift();
+     console.log(this.h2Array);
+     console.log(this.p2.lives);
+     setTimeout(function(){
+       collisionP2 = false;
+     }, 300)
   }
 };
 
+Game.prototype.detectCollisionP1 = function(arrowNumber){
+  // var collisionP1 = false;
+  if (this.a2Array[arrowNumber].x < this.p1.x + this.p1.width &&
+     this.a2Array[arrowNumber].x + this.a2Array[arrowNumber].width > this.p1.x &&
+     this.a2Array[arrowNumber].y < this.p1.y + this.p1.height &&
+     this.a2Array[arrowNumber].height + this.a2Array[arrowNumber].y > this.p1.y) {
+       collisionP1 = true
+  }
+  if(collisionP1){
+    console.log("collision detected for player 1!");
+    this.p1.lives -= 1;
+    this.h1Array.shift();
+    console.log(this.h1Array);
+    console.log(this.p1.lives);
+      setTimeout(function(){
+        collisionP1 = false;
+      }, 300)
+  }
+};
 
 
   Game.prototype.draw = function(){
@@ -86,6 +146,13 @@ Game.prototype.detectCollision = function(){
       this.p1.draw(this.context, this.image1);
     this.p2.draw(this.context, this.image2);
 
+for (var i = 0; i < this.h1Array.length; i++){
+  this.h1Array[i].draw(this.context, this.image);
+};
+for (var i = 0; i < this.h2Array.length; i++){
+  this.h2Array[i].draw(this.context, this.image);
+};
+
     // this.a1.draw(this.context, this.arrowimage1);
 
     for (var i = 0; i < this.a1Array.length; i++){
@@ -94,7 +161,7 @@ Game.prototype.detectCollision = function(){
 
     for (var x = 0; x < this.a2Array.length; x++){
       this.a2Array[x].draw(this.context, this.a2Array[x].img)
-      console.log(this.a2Array);
+      // console.log(this.a2Array);
     };
 
 
@@ -171,6 +238,7 @@ function Player(x,y) {
     this.y = y;
     // this.width = 2;
     // this.height = 28;
+    this.lives = 3;
     this.width = 80;
     this.height = 116;
     this.image = new Image();
@@ -199,6 +267,18 @@ function Arrow(){
 
   this.draw = function(ctx, image){
     ctx.drawImage(image, this.x, this.y, this.width, this.height);
+  }
+};
+
+
+function Heart(){
+  this.width = 31;
+  this.height = 29;
+  this.y = 550;
+  this.img = new Image();
+  this.img.src = "images/life_heart.png";
+  this.draw = function(ctx, image){
+    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
 };
 
@@ -310,6 +390,7 @@ $(document).on("keydown",function(e){
     myArrow2.y = game.p2.y + game.p2.height/3;
     game.a2Array.push(myArrow2);
     var index2 = game.a2Array.indexOf(myArrow2);
+    console.log('index',index2);
     game.moveArrowLeft(index2);
   }
 });
