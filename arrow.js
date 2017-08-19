@@ -7,6 +7,8 @@ $(document).ready(function(){
   var collisionP2 = false;
   var p1dead = false;
   var p2dead = false;
+  var canShoot = true;
+  var canShoot2 = true;
 
 
 function Game(){
@@ -168,10 +170,6 @@ for (var i = 0; i < this.h2Array.length; i++){
     };
 
 
-
-
-
-
     // this.a2.draw(this.context, this.arrowimage2);
   };
 
@@ -180,17 +178,17 @@ for (var i = 0; i < this.h2Array.length; i++){
         return;
 
     if (this.keys.isPressed(83)) {
-      this.p1.y = Math.min(this.height - this.p1.height, this.p1.y + 4);
+      this.p1.y = Math.min(this.height - this.p1.height, this.p1.y + 10);
     }
     else if (this.keys.isPressed(87)) {
-      this.p1.y = Math.max(0, this.p1.y - 4);
+      this.p1.y = Math.max(0, this.p1.y - 10);
     };
 
     if (this.keys.isPressed(40)) {
-      this.p2.y = Math.min(this.height - this.p2.height, this.p2.y + 4);
+      this.p2.y = Math.min(this.height - this.p2.height, this.p2.y + 10);
     }
     else if (this.keys.isPressed(38)) {
-      this.p2.y = Math.max(0, this.p2.y - 4);
+      this.p2.y = Math.max(0, this.p2.y - 10);
     };
 
 
@@ -306,7 +304,29 @@ function Heart(){
 //   };
 // }
 
+// var timeoutId = 0;
+// $('#Search').keypress(function () {
+//     clearTimeout(timeoutId); // doesn't matter if it's 0
+//     timeoutId = setTimeout(getFilteredResultCount, 500);
+//     // Note: when passing a function to setTimeout, just pass the function name.
+//     // If you call the function, like: getFilteredResultCount(), it will execute immediately.
+// });
+//
+// window.addEventListener("keydown", (function(canMove) {
+//   return function(event) {
+//     if (!canMove) return false;
+//     canMove = false;
+//     setTimeout(function() { canMove = true; }, 250);
+//     switch (event.keyCode) {
+//       case 68: return move("right");
+//       case 83: return move("down");
+//       case 65: return move("left");
+//       case 87: return move("up");
+//     }
+//   };
+// })(true), false)
 
+// --------------------------------------------
 
 function KeyListener() {
   this.pressedKeys = [];
@@ -320,6 +340,8 @@ function KeyListener() {
   };
 
 document.addEventListener("keydown", this.keydown.bind(this));
+
+
 document.addEventListener("keyup", this.keyup.bind(this));
 
 };
@@ -338,8 +360,23 @@ document.addEventListener("keypress", function(e){
 });
 
 };
-
-
+// // ___________________________
+// var moveListener = null;
+//
+// window.addEventListener("keydown", onKeyDown, false);
+// window.addEventListener("keyup", onKeyUp, false);
+//
+// function onKeyDown(event) {
+//   var keyCode = event.keyCode;
+//   //prevent reseting event listener on hold down also will prevent up,left diagonal type movement
+//   if (moveListener === null) {
+//     moveListener = setInterval(move(keyCode),400);
+//   }
+// };
+// function onKeyUp (event){
+//     clearInterval(moveListener);
+//     moveListener = null;
+// };
 
 
 
@@ -367,7 +404,7 @@ function MainLoop() {
       p2dead = true;
         },1000)
     }
-    
+
     if (!p1dead && !p2dead){
       setTimeout(MainLoop, 33.3333);
     } else if(p1dead){
@@ -386,6 +423,7 @@ MainLoop();
 
 
 $(document).on("keydown",function(e){
+  if (canShoot){
   if(e.keyCode === 65){
     var myArrow = new Arrow();
     // this.a1.y = -32;
@@ -397,15 +435,21 @@ $(document).on("keydown",function(e){
     var index = game.a1Array.indexOf(myArrow);
     game.moveArrowRight(index);
     console.log(index);
+    canShoot = false;
 
     // for (var i = 0; i < game.a1Array.length; i++){
     //   game.a1Array[i].draw(game.context, game.a1Array[i].img)
     // }
+    setTimeout(function(){
+      canShoot = true;
+    }, 800);
 
+    }
   }
 });
 
 $(document).on("keydown",function(e){
+  if (canShoot2){
   if(e.keyCode === 37){
     var myArrow2 = new Arrow();
     myArrow2.x = game.p2.x;
@@ -416,6 +460,11 @@ $(document).on("keydown",function(e){
     var index2 = game.a2Array.indexOf(myArrow2);
     console.log('index',index2);
     game.moveArrowLeft(index2);
+    canShoot2 = false;
+    setTimeout(function(){
+      canShoot2 = true;
+    }, 800);
+  }
   }
 });
 
